@@ -1,2 +1,1 @@
-# DarkWorld
-Open world rogue like grinding
+open world rogue like
