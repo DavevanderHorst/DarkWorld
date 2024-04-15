@@ -2,10 +2,10 @@ module Main exposing (init, main, update)
 
 import Browser
 import Browser.Dom
-import Html exposing (Html, div, text)
-import Html.Attributes as Attr
-import MainModel exposing (Model)
 import Messages exposing (Msg(..))
+import Models.MainModel exposing (MainModel, ScreenDimensions, startMainModel)
+import Task
+import View.MainView exposing (view)
 
 
 main =
@@ -17,30 +17,24 @@ main =
         }
 
 
-init : () -> ( Model, Cmd Msg )
+init : () -> ( MainModel, Cmd Msg )
 init _ =
-    ( Model
-    , Cmd.none
+    ( startMainModel
+    , Task.perform GotViewport Browser.Dom.getViewport
     )
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> MainModel -> ( MainModel, Cmd Msg )
 update msg model =
     case msg of
-        NoMessage ->
-            ( model, Cmd.none )
+        GotViewport viewPort ->
+            let
+                newScreenDimensions =
+                    ScreenDimensions viewPort.viewport.width viewPort.viewport.height
+            in
+            ( { model | screenDimensions = newScreenDimensions }, Cmd.none )
 
 
-subscriptions : Model -> Sub Msg
+subscriptions : MainModel -> Sub Msg
 subscriptions model =
     Sub.none
-
-
-view : Model -> Html Msg
-view model =
-    div [] [ text "DDDD" ]
-
-
-attrFloat : (String -> Html.Attribute msg) -> Float -> Html.Attribute msg
-attrFloat attr value =
-    attr (String.fromFloat value ++ "px")
