@@ -2,12 +2,14 @@ module Models.MainModel exposing (..)
 
 
 type alias MainModel =
-    { screenDimensions : ScreenDimensions }
+    { screenDimensions : ScreenDimensions
+    , error : Maybe Error
+    }
 
 
 startMainModel : MainModel
 startMainModel =
-    MainModel startScreenDimensions
+    MainModel startScreenDimensions Nothing
 
 
 type alias ScreenDimensions =
@@ -19,3 +21,9 @@ type alias ScreenDimensions =
 startScreenDimensions : ScreenDimensions
 startScreenDimensions =
     ScreenDimensions 0 0
+
+
+type alias Error =
+    { method : String
+    , error : String
+    }
