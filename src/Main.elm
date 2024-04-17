@@ -3,7 +3,8 @@ module Main exposing (init, main, update)
 import Browser
 import Browser.Dom
 import Messages exposing (Msg(..))
-import Models.MainModel exposing (MainModel, ScreenDimensions, startMainModel)
+import Models.MainModel exposing (MainModel, ScreenDimensions)
+import Models.StartModels exposing (startMainModel)
 import Task
 import View.MainView exposing (view)
 
@@ -36,5 +37,5 @@ update msg model =
 
 
 subscriptions : MainModel -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none

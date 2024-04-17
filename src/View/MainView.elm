@@ -1,10 +1,12 @@
 module View.MainView exposing (..)
 
-import Html exposing (Html, div, text)
+import Dict
+import Html exposing (Attribute, Html, div, text)
 import Html.Attributes exposing (style)
+import Maps.MapSizes exposing (mapCellSquareSizeInPixelString, mapHeightInPxString, mapWidthInPxString)
 import Messages exposing (Msg)
-import Models.MainModel exposing (MainModel)
-import Svg
+import Models.MainModel exposing (MainModel, Map, MapCell)
+import Svg exposing (Svg)
 import Svg.Attributes as SvgAttr
 
 
@@ -35,25 +37,38 @@ view model =
 
 mapView : MainModel -> Html Msg
 mapView model =
-    div
-        [ style "height" "400px"
-        , style "width" "800px"
+    Svg.svg
+        [ style "height" mapHeightInPxString
+        , style "width" mapWidthInPxString
         , style "background-color" "black"
         ]
-        [ Svg.svg []
-            [ Svg.g []
-                [ Svg.rect
-                    [ SvgAttr.fill "white"
-                    , SvgAttr.clipPath horizontalGridPolygon
-                    , SvgAttr.width "20px"
-                    , SvgAttr.height "20px"
-                    , SvgAttr.x "20"
-                    , SvgAttr.y "50"
-                    ]
-                    []
-                ]
-            ]
+        [ Svg.g [] (renderMapCells model.currentMap)
         ]
+
+
+renderMapCells : Map -> List (Svg Msg)
+renderMapCells map =
+    Dict.foldl renderMapCell [] map.mapCells
+
+
+renderMapCell : String -> MapCell -> List (Svg Msg) -> List (Svg Msg)
+renderMapCell _ mapCell svgList =
+    let
+        attributes =
+            baseGridCellAttributes mapCell
+    in
+    Svg.rect attributes [] :: svgList
+
+
+baseGridCellAttributes : MapCell -> List (Attribute msg)
+baseGridCellAttributes mapCell =
+    [ SvgAttr.clipPath horizontalGridPolygon
+    , SvgAttr.width mapCellSquareSizeInPixelString
+    , SvgAttr.height mapCellSquareSizeInPixelString
+    , SvgAttr.x mapCell.startWidthInPx
+    , SvgAttr.y mapCell.startHeightInPx
+    , SvgAttr.fill "white"
+    ]
 
 
 horizontalGridPolygon : String
