@@ -1,10 +1,40 @@
 module Maps.MapSizes exposing (..)
 
 
+mapCellSquareSize : Int
+mapCellSquareSize =
+    -- warning must be divisible by 2 and 4
+    -- 2 because of the horizontal shift
+    -- 4 because of the vertical shift up, 25%
+    52
+
+
+mapCellTotalRows : Int
+mapCellTotalRows =
+    -- uneven looks nicer
+    15
+
+
+mapCellUnevenRowTotalColumns : Int
+mapCellUnevenRowTotalColumns =
+    19
+
+
+roomBetweenHorizontalCells : Int
+roomBetweenHorizontalCells =
+    -- warning must be divisible by 2
+    4
+
+
+blackBackgroundMapMargin : Int
+blackBackgroundMapMargin =
+    30
+
+
 mapWidth : Int
 mapWidth =
-    -- total width = number of horizontal cells + space in between
-    (mapCellUnevenRowTotalColumns * mapCellTotalHorizontalWidth) - roomBetweenHorizontalCells
+    -- total width = number of horizontal cells + space in between + blackMapMargin on both sides
+    (mapCellUnevenRowTotalColumns * mapCellTotalHorizontalWidth) - roomBetweenHorizontalCells + (blackBackgroundMapMargin * 2)
 
 
 mapWidthInPxString : String
@@ -14,7 +44,8 @@ mapWidthInPxString =
 
 mapHeight : Int
 mapHeight =
-    mapCellTotalRows * mapCellTotalVerticalHeight
+    -- total rows * vertical height + background margin - 1 * shift
+    mapCellTotalRows * mapCellTotalVerticalHeight + (blackBackgroundMapMargin * 2) + quarterMapCellSquareSize
 
 
 mapHeightInPxString : String
@@ -22,28 +53,9 @@ mapHeightInPxString =
     makePixelStringFromInt mapHeight
 
 
-mapCellTotalRows : Int
-mapCellTotalRows =
-    -- uneven looks nicer
-    9
-
-
-mapCellUnevenRowTotalColumns : Int
-mapCellUnevenRowTotalColumns =
-    15
-
-
 mapCellEvenRowTotalColumns : Int
 mapCellEvenRowTotalColumns =
     mapCellUnevenRowTotalColumns - 1
-
-
-mapCellSquareSize : Int
-mapCellSquareSize =
-    -- warning must be divisible by 2 and 4
-    -- 2 because of the horizontal shift
-    -- 4 because of the vertical shift up, 25%
-    40
 
 
 mapCellSquareSizeInPixelString : String
@@ -69,12 +81,6 @@ halfMapCellSquareSize =
 quarterMapCellSquareSize : Int
 quarterMapCellSquareSize =
     mapCellSquareSize // 4
-
-
-roomBetweenHorizontalCells : Int
-roomBetweenHorizontalCells =
-    -- warning must be divisible by 2
-    4
 
 
 halfRoomBetweenHorizontalCells : Int

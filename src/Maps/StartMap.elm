@@ -4,7 +4,7 @@ import BasicFunctions exposing (isEvenIntNumber)
 import Dict exposing (Dict)
 import Maps.DictFunctions exposing (createMapCellDictKey)
 import Maps.MapCreationFunctions exposing (makeMapCoordinateList)
-import Maps.MapSizes exposing (evenRowHorizontalBaseShift, halfMapCellSquareSize, halfRoomBetweenHorizontalCells, mapCellSquareSize, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight, roomBetweenHorizontalCells)
+import Maps.MapSizes exposing (blackBackgroundMapMargin, evenRowHorizontalBaseShift, halfMapCellSquareSize, halfRoomBetweenHorizontalCells, mapCellSquareSize, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight, quarterMapCellSquareSize, roomBetweenHorizontalCells)
 import Models.MainModel exposing (Map, MapCell, MapCoordinate)
 
 
@@ -29,8 +29,8 @@ generateMapCell mapCoordinate gridCellDict =
         gridX =
             let
                 baseX =
-                    -- total size of a cell * (column number - 1)
-                    mapCellTotalHorizontalWidth * stepsX
+                    -- total size of a cell * (column number - 1) + black margin of background
+                    (mapCellTotalHorizontalWidth * stepsX) + blackBackgroundMapMargin
             in
             if isEvenIntNumber rowNumber then
                 -- the even rows we need to shift right, so that they fall nice together
@@ -41,7 +41,8 @@ generateMapCell mapCoordinate gridCellDict =
 
         gridY =
             -- start + number of rows that went before + padding from the base rect
-            mapCellTotalVerticalHeight * stepsY
+            --              + black margin of background
+            (mapCellTotalVerticalHeight * stepsY) + blackBackgroundMapMargin
 
         newMapCell : MapCell
         newMapCell =
