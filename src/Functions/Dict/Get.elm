@@ -6,8 +6,8 @@ import Functions.ToString exposing (mapCoordinateToString)
 import Models.MainModel exposing (Error, MapCell, MapCoordinate)
 
 
-getMapCellFromMapCellDict : MapCoordinate -> Dict String MapCell -> Result Error MapCell
-getMapCellFromMapCellDict roomCoordinate gridCellDict =
+tryGetMapCellFromMapCellDict : MapCoordinate -> Dict String MapCell -> Result Error MapCell
+tryGetMapCellFromMapCellDict roomCoordinate gridCellDict =
     let
         maybeGridCell =
             Dict.get (createMapCellDictKey roomCoordinate) gridCellDict

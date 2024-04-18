@@ -1,8 +1,8 @@
 module Models.StartModels exposing (..)
 
 import Dict
-import Maps.StartMap exposing (makeStartMap)
-import Models.MainModel exposing (MainModel, Map, ScreenDimensions)
+import Maps.StartMap exposing (makeStartMap, startHeroSpot)
+import Models.MainModel exposing (MainModel, Map, MapCoordinate, ScreenDimensions)
 
 
 startMainModel : MainModel
@@ -13,14 +13,14 @@ startMainModel =
     in
     case startMapResult of
         Ok startMap ->
-            MainModel startScreenDimensions Nothing startMap
+            MainModel emptyScreenDimensions Nothing startMap startHeroSpot
 
         Err error ->
-            MainModel startScreenDimensions (Just error) emptyMap
+            MainModel emptyScreenDimensions (Just error) emptyMap startHeroSpot
 
 
-startScreenDimensions : ScreenDimensions
-startScreenDimensions =
+emptyScreenDimensions : ScreenDimensions
+emptyScreenDimensions =
     ScreenDimensions 0 0
 
 

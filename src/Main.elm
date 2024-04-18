@@ -2,8 +2,11 @@ module Main exposing (init, main, update)
 
 import Browser
 import Browser.Dom
+import Functions.Dict.Get exposing (tryGetMapCellFromMapCellDict)
+import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe, trySetHeroInMapCellDict)
+import Functions.ToString exposing (cellContentToString, mapCoordinateToString)
 import Messages exposing (Msg(..))
-import Models.MainModel exposing (MainModel, ScreenDimensions)
+import Models.MainModel exposing (MainModel, MapCellContent(..), ScreenDimensions)
 import Models.StartModels exposing (startMainModel)
 import Task
 import View.MainView exposing (view)
@@ -34,6 +37,54 @@ update msg model =
                     ScreenDimensions viewPort.viewport.width viewPort.viewport.height
             in
             ( { model | screenDimensions = newScreenDimensions }, Cmd.none )
+
+        MapIsClicked clickedMapCoordinate ->
+            let
+                currentMap =
+                    model.currentMap
+
+                currentHeroMapCellResult =
+                    tryGetMapCellFromMapCellDict model.heroSpotOnCurrentMap currentMap.mapCells
+            in
+            case currentHeroMapCellResult of
+                Err error ->
+                    ( { model | error = Just error }, Cmd.none )
+
+                Ok currentHeroMapCell ->
+                    if currentHeroMapCell.content /= Hero then
+                        let
+                            newError =
+                                { method = "MapIsClicked"
+                                , error =
+                                    "Saved hero spot in model = "
+                                        ++ mapCoordinateToString model.heroSpotOnCurrentMap
+                                        ++ ". But this cell is "
+                                        ++ cellContentToString currentHeroMapCell.content
+                                }
+                        in
+                        ( { model | error = Just newError }, Cmd.none )
+
+                    else
+                        let
+                            oldHeroMapCell =
+                                { currentHeroMapCell | content = Empty }
+
+                            mapCellsWithoutHero =
+                                insertMapCellInDictUnSafe oldHeroMapCell currentMap.mapCells
+
+                            mapCellsWithHeroResult =
+                                trySetHeroInMapCellDict clickedMapCoordinate mapCellsWithoutHero
+                        in
+                        case mapCellsWithHeroResult of
+                            Err error ->
+                                ( { model | error = Just error }, Cmd.none )
+
+                            Ok mapCellsWithHero ->
+                                let
+                                    updatedMap =
+                                        { currentMap | mapCells = mapCellsWithHero }
+                                in
+                                ( { model | currentMap = updatedMap, heroSpotOnCurrentMap = clickedMapCoordinate }, Cmd.none )
 
 
 subscriptions : MainModel -> Sub Msg

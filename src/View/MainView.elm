@@ -4,10 +4,11 @@ import Dict
 import Html exposing (Attribute, Html, div, text)
 import Html.Attributes exposing (style)
 import Maps.MapSizes exposing (mapCellSquareSizeInPixelString, mapHeightInPxString, mapWidthInPxString)
-import Messages exposing (Msg)
+import Messages exposing (Msg(..))
 import Models.MainModel exposing (MainModel, Map, MapCell, MapCellContent(..))
 import Svg exposing (Svg)
 import Svg.Attributes as SvgAttr
+import Svg.Events
 
 
 view : MainModel -> Html Msg
@@ -61,7 +62,7 @@ renderMapCell _ mapCell svgList =
         Empty ->
             let
                 attributes =
-                    SvgAttr.fill "white" :: baseGridCellAttributes
+                    Svg.Events.onClick (MapIsClicked mapCell.mapCoordinate) :: SvgAttr.fill "white" :: baseGridCellAttributes
             in
             Svg.rect attributes [] :: svgList
 

@@ -2,7 +2,7 @@ module Functions.Dict.Insert exposing (..)
 
 import Dict exposing (Dict)
 import Functions.Dict.Basic exposing (createMapCellDictKey)
-import Functions.Dict.Get exposing (getMapCellFromMapCellDict)
+import Functions.Dict.Get exposing (tryGetMapCellFromMapCellDict)
 import Functions.ToString exposing (cellContentToString)
 import Models.MainModel exposing (Error, MapCell, MapCellContent(..), MapCoordinate)
 
@@ -17,7 +17,7 @@ trySetHeroInMapCellDict : MapCoordinate -> Dict String MapCell -> Result Error (
 trySetHeroInMapCellDict roomCoordinate gridCellDict =
     let
         getMapCellResult =
-            getMapCellFromMapCellDict roomCoordinate gridCellDict
+            tryGetMapCellFromMapCellDict roomCoordinate gridCellDict
     in
     case getMapCellResult of
         Err err ->

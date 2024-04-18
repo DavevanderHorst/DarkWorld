@@ -7,6 +7,7 @@ type alias MainModel =
     { screenDimensions : ScreenDimensions
     , error : Maybe Error
     , currentMap : Map
+    , heroSpotOnCurrentMap : MapCoordinate
     }
 
 
