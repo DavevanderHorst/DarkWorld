@@ -1,20 +1,33 @@
 module Maps.StartMap exposing (..)
 
-import BasicFunctions exposing (isEvenIntNumber)
 import Dict exposing (Dict)
-import Maps.DictFunctions exposing (createMapCellDictKey)
+import Functions.Basic exposing (isEvenIntNumber)
+import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe, trySetHeroInMapCellDict)
 import Maps.MapCreationFunctions exposing (makeMapCoordinateList)
-import Maps.MapSizes exposing (blackBackgroundMapMargin, evenRowHorizontalBaseShift, halfMapCellSquareSize, halfRoomBetweenHorizontalCells, mapCellSquareSize, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight, quarterMapCellSquareSize, roomBetweenHorizontalCells)
-import Models.MainModel exposing (Map, MapCell, MapCoordinate)
+import Maps.MapSizes exposing (blackBackgroundMapMargin, evenRowHorizontalBaseShift, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight, quarterMapCellSquareSize, roomBetweenHorizontalCells)
+import Models.MainModel exposing (Error, Map, MapCell, MapCellContent(..), MapCoordinate)
 
 
-makeStartMap : Map
+startHeroSpot : MapCoordinate
+startHeroSpot =
+    { columnNumber = 3, rowNumber = 4 }
+
+
+makeStartMap : Result Error Map
 makeStartMap =
     let
-        mapCells =
+        mapCellDict =
             List.foldl generateMapCell Dict.empty makeMapCoordinateList
+
+        mapCellDictWithHeroResult =
+            trySetHeroInMapCellDict startHeroSpot mapCellDict
     in
-    Map 1 mapCells
+    case mapCellDictWithHeroResult of
+        Err error ->
+            Err error
+
+        Ok mapCellDictWithHero ->
+            Ok (Map 1 mapCellDictWithHero)
 
 
 generateMapCell : MapCoordinate -> Dict String MapCell -> Dict String MapCell
@@ -49,11 +62,7 @@ generateMapCell mapCoordinate gridCellDict =
             { startWidthInPx = String.fromInt gridX ++ "px"
             , startHeightInPx = String.fromInt gridY ++ "px"
             , mapCoordinate = mapCoordinate
+            , content = Empty
             }
     in
-    insertMapCellInDict newMapCell gridCellDict
-
-
-insertMapCellInDict : MapCell -> Dict String MapCell -> Dict String MapCell
-insertMapCellInDict mapCell gridCellDict =
-    Dict.insert (createMapCellDictKey mapCell.mapCoordinate) mapCell gridCellDict
+    insertMapCellInDictUnSafe newMapCell gridCellDict

@@ -1,4 +1,4 @@
-module Maps.DictFunctions exposing (..)
+module Functions.Dict.Basic exposing (..)
 
 import Models.MainModel exposing (MapCoordinate)
 

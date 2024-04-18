@@ -1,8 +1,6 @@
 module Maps.MapCreationFunctions exposing (..)
 
--- for adding all coordinates to a list
-
-import BasicFunctions exposing (isEvenIntNumber)
+import Functions.Basic exposing (isEvenIntNumber)
 import Maps.MapSizes exposing (mapCellEvenRowTotalColumns, mapCellTotalRows, mapCellUnevenRowTotalColumns)
 import Models.MainModel exposing (Map, MapCoordinate)
 

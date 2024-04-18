@@ -5,7 +5,7 @@ import Html exposing (Attribute, Html, div, text)
 import Html.Attributes exposing (style)
 import Maps.MapSizes exposing (mapCellSquareSizeInPixelString, mapHeightInPxString, mapWidthInPxString)
 import Messages exposing (Msg)
-import Models.MainModel exposing (MainModel, Map, MapCell)
+import Models.MainModel exposing (MainModel, Map, MapCell, MapCellContent(..))
 import Svg exposing (Svg)
 import Svg.Attributes as SvgAttr
 
@@ -54,20 +54,32 @@ renderMapCells map =
 renderMapCell : String -> MapCell -> List (Svg Msg) -> List (Svg Msg)
 renderMapCell _ mapCell svgList =
     let
-        attributes =
-            baseGridCellAttributes mapCell
+        baseGridCellAttributes =
+            makeBaseGridCellAttributes mapCell
     in
-    Svg.rect attributes [] :: svgList
+    case mapCell.content of
+        Empty ->
+            let
+                attributes =
+                    SvgAttr.fill "white" :: baseGridCellAttributes
+            in
+            Svg.rect attributes [] :: svgList
+
+        Hero ->
+            let
+                attributes =
+                    SvgAttr.xlinkHref "Images/swordsman.png" :: baseGridCellAttributes
+            in
+            Svg.image attributes [] :: svgList
 
 
-baseGridCellAttributes : MapCell -> List (Attribute msg)
-baseGridCellAttributes mapCell =
+makeBaseGridCellAttributes : MapCell -> List (Attribute msg)
+makeBaseGridCellAttributes mapCell =
     [ SvgAttr.clipPath horizontalGridPolygon
     , SvgAttr.width mapCellSquareSizeInPixelString
     , SvgAttr.height mapCellSquareSizeInPixelString
     , SvgAttr.x mapCell.startWidthInPx
     , SvgAttr.y mapCell.startHeightInPx
-    , SvgAttr.fill "white"
     ]
 
 

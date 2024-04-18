@@ -26,7 +26,13 @@ type alias MapCell =
     { startWidthInPx : String
     , startHeightInPx : String
     , mapCoordinate : MapCoordinate
+    , content : MapCellContent
     }
+
+
+type MapCellContent
+    = Empty
+    | Hero
 
 
 type alias MapCoordinate =

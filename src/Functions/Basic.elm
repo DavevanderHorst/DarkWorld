@@ -1,4 +1,4 @@
-module BasicFunctions exposing (..)
+module Functions.Basic exposing (..)
 
 
 isEvenIntNumber : Int -> Bool
