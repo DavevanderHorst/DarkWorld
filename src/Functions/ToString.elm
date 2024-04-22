@@ -1,6 +1,7 @@
 module Functions.ToString exposing (..)
 
-import Models.MainModel exposing (MapCellContent(..), MapCoordinate)
+import Models.MainModel exposing (MapCoordinate)
+import Models.Types exposing (MapCellContent(..), MonsterType(..))
 
 
 mapCoordinateToString : MapCoordinate -> String
@@ -16,3 +17,13 @@ cellContentToString content =
 
         Hero ->
             "Hero"
+
+        Monster monsterType ->
+            "Monster " ++ monsterTypeToString monsterType
+
+
+monsterTypeToString : MonsterType -> String
+monsterTypeToString monsterType =
+    case monsterType of
+        Dummy ->
+            "Dummy"

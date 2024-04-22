@@ -2,15 +2,24 @@ module Maps.StartMap exposing (..)
 
 import Dict exposing (Dict)
 import Functions.Basic exposing (isEvenIntNumber)
-import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe, trySetHeroInMapCellDict)
+import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe, trySetHeroInMapCellDict, trySetMonstersInMapCellDict)
+import Functions.Movement exposing (trySetMovementAroundHeroInMapCells)
 import Maps.MapCreationFunctions exposing (makeMapCoordinateList)
-import Maps.MapSizes exposing (blackBackgroundMapMargin, evenRowHorizontalBaseShift, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight, quarterMapCellSquareSize, roomBetweenHorizontalCells)
-import Models.MainModel exposing (Error, Map, MapCell, MapCellContent(..), MapCoordinate)
+import Maps.MapSizes exposing (blackBackgroundMapMargin, evenRowHorizontalBaseShift, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight)
+import Models.MainModel exposing (Error, Map, MapCell, MapCoordinate)
+import Models.Types exposing (CellMovementState(..), MapCellContent(..), MonsterType(..))
 
 
 startHeroSpot : MapCoordinate
 startHeroSpot =
     { columnNumber = 3, rowNumber = 4 }
+
+
+startMonsterSpots : List ( MonsterType, MapCoordinate )
+startMonsterSpots =
+    [ ( Dummy, { columnNumber = 9, rowNumber = 4 } )
+    , ( Dummy, { columnNumber = 13, rowNumber = 7 } )
+    ]
 
 
 makeStartMap : Result Error Map
@@ -27,7 +36,30 @@ makeStartMap =
             Err error
 
         Ok mapCellDictWithHero ->
-            Ok (Map 1 mapCellDictWithHero)
+            let
+                mapCellDictWithHeroAndMonstersResult =
+                    trySetMonstersInMapCellDict startMonsterSpots mapCellDictWithHero
+            in
+            case mapCellDictWithHeroAndMonstersResult of
+                Err error ->
+                    Err error
+
+                Ok mapCellDictWithHeroAndMonsters ->
+                    -- Map is ready, now we set movement steps in every spot.
+                    let
+                        setMovementStepsResult =
+                            trySetMovementAroundHeroInMapCells startHeroSpot mapCellDictWithHeroAndMonsters
+                    in
+                    case setMovementStepsResult of
+                        Err err ->
+                            Err err
+
+                        Ok finishedMap ->
+                            Ok
+                                { mapNumber = 1
+                                , mapCells = finishedMap
+                                , cellMovementState = Active
+                                }
 
 
 generateMapCell : MapCoordinate -> Dict String MapCell -> Dict String MapCell
@@ -59,10 +91,11 @@ generateMapCell mapCoordinate gridCellDict =
 
         newMapCell : MapCell
         newMapCell =
-            { startWidthInPx = String.fromInt gridX ++ "px"
-            , startHeightInPx = String.fromInt gridY ++ "px"
+            { startWidth = gridX
+            , startHeight = gridY
             , mapCoordinate = mapCoordinate
             , content = Empty
+            , stepsToMoveTowards = Nothing
             }
     in
     insertMapCellInDictUnSafe newMapCell gridCellDict

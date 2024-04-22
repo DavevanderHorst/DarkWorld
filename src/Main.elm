@@ -3,11 +3,14 @@ module Main exposing (init, main, update)
 import Browser
 import Browser.Dom
 import Functions.Dict.Get exposing (tryGetMapCellFromMapCellDict)
-import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe, trySetHeroInMapCellDict)
+import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe)
+import Functions.MoveAnimation exposing (tryMakeMoveAnimation)
+import Functions.Movement exposing (trySetMovementAroundHeroInMapCells)
 import Functions.ToString exposing (cellContentToString, mapCoordinateToString)
 import Messages exposing (Msg(..))
-import Models.MainModel exposing (MainModel, MapCellContent(..), ScreenDimensions)
+import Models.MainModel exposing (MainModel, ScreenDimensions)
 import Models.StartModels exposing (startMainModel)
+import Models.Types exposing (CellMovementState(..), MapCellContent(..))
 import Task
 import View.MainView exposing (view)
 
@@ -72,19 +75,11 @@ update msg model =
                             mapCellsWithoutHero =
                                 insertMapCellInDictUnSafe oldHeroMapCell currentMap.mapCells
 
-                            mapCellsWithHeroResult =
-                                trySetHeroInMapCellDict clickedMapCoordinate mapCellsWithoutHero
+                            updatedMap =
+                                -- We remove hero from map, and make sure nothing can be clicked while move animation is active.
+                                { currentMap | mapCells = mapCellsWithoutHero, cellMovementState = Passive }
                         in
-                        case mapCellsWithHeroResult of
-                            Err error ->
-                                ( { model | error = Just error }, Cmd.none )
-
-                            Ok mapCellsWithHero ->
-                                let
-                                    updatedMap =
-                                        { currentMap | mapCells = mapCellsWithHero }
-                                in
-                                ( { model | currentMap = updatedMap, heroSpotOnCurrentMap = clickedMapCoordinate }, Cmd.none )
+                        ( { model | currentMap = updatedMap }, Cmd.none )
 
 
 subscriptions : MainModel -> Sub Msg

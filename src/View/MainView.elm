@@ -5,10 +5,12 @@ import Html exposing (Attribute, Html, div, text)
 import Html.Attributes exposing (style)
 import Maps.MapSizes exposing (mapCellSquareSizeInPixelString, mapHeightInPxString, mapWidthInPxString)
 import Messages exposing (Msg(..))
-import Models.MainModel exposing (MainModel, Map, MapCell, MapCellContent(..))
+import Models.MainModel exposing (MainModel, Map, MapCell)
+import Models.Types exposing (CellMovementState(..), MapCellContent(..), MonsterType(..))
 import Svg exposing (Svg)
 import Svg.Attributes as SvgAttr
 import Svg.Events
+import View.Colors exposing (heroMapCellColor, monsterAgroColorString, whiteColorString)
 
 
 view : MainModel -> Html Msg
@@ -27,8 +29,8 @@ view model =
                     , style "flex-direction" "column"
                     , style "font-size" "40px"
                     ]
-                    [ div [] [ text ("what method : " ++ error.method) ]
-                    , div [] [ text ("error" ++ error.error) ]
+                    [ div [] [ text ("What method : " ++ error.method) ]
+                    , div [] [ text ("Full error : " ++ error.error) ]
                     ]
 
             Nothing ->
@@ -49,11 +51,11 @@ mapView model =
 
 renderMapCells : Map -> List (Svg Msg)
 renderMapCells map =
-    Dict.foldl renderMapCell [] map.mapCells
+    Dict.foldl (renderMapCell map.cellMovementState) [] map.mapCells
 
 
-renderMapCell : String -> MapCell -> List (Svg Msg) -> List (Svg Msg)
-renderMapCell _ mapCell svgList =
+renderMapCell : CellMovementState -> String -> MapCell -> List (Svg Msg) -> List (Svg Msg)
+renderMapCell cellMovementState _ mapCell svgList =
     let
         baseGridCellAttributes =
             makeBaseGridCellAttributes mapCell
@@ -61,17 +63,51 @@ renderMapCell _ mapCell svgList =
     case mapCell.content of
         Empty ->
             let
-                attributes =
-                    Svg.Events.onClick (MapIsClicked mapCell.mapCoordinate) :: SvgAttr.fill "white" :: baseGridCellAttributes
+                baseAttributes =
+                    SvgAttr.fill whiteColorString :: baseGridCellAttributes
+
+                readyAttributes =
+                    case cellMovementState of
+                        Active ->
+                            Svg.Events.onClick (MapIsClicked mapCell.mapCoordinate) :: baseAttributes
+
+                        Passive ->
+                            baseAttributes
             in
-            Svg.rect attributes [] :: svgList
+            let
+                movement =
+                    case mapCell.stepsToMoveTowards of
+                        Nothing ->
+                            "not possible"
+
+                        Just steps ->
+                            String.fromInt steps
+            in
+            Svg.rect readyAttributes [ text movement ] :: svgList
 
         Hero ->
             let
-                attributes =
-                    SvgAttr.xlinkHref "Images/swordsman.png" :: baseGridCellAttributes
+                backGroundColorRectAttributes =
+                    SvgAttr.fill heroMapCellColor :: baseGridCellAttributes
+
+                imageAttributes =
+                    SvgAttr.xlinkHref "Images/swordsmanNoBg.png" :: baseGridCellAttributes
             in
-            Svg.image attributes [] :: svgList
+            -- To set the background color we need to add 2 svg s
+            Svg.rect backGroundColorRectAttributes [] :: Svg.image imageAttributes [] :: svgList
+
+        Monster monsterType ->
+            let
+                backGroundColorRectAttributes =
+                    SvgAttr.fill monsterAgroColorString :: baseGridCellAttributes
+
+                imageAttributes =
+                    case monsterType of
+                        Dummy ->
+                            SvgAttr.xlinkHref "Images/dummyNoBg.png" :: baseGridCellAttributes
+            in
+            -- To set the background color we need to add 2 svg s
+            Svg.rect backGroundColorRectAttributes [] :: Svg.image imageAttributes [] :: svgList
 
 
 makeBaseGridCellAttributes : MapCell -> List (Attribute msg)
@@ -79,8 +115,8 @@ makeBaseGridCellAttributes mapCell =
     [ SvgAttr.clipPath horizontalGridPolygon
     , SvgAttr.width mapCellSquareSizeInPixelString
     , SvgAttr.height mapCellSquareSizeInPixelString
-    , SvgAttr.x mapCell.startWidthInPx
-    , SvgAttr.y mapCell.startHeightInPx
+    , SvgAttr.x (makePxStringFromInt mapCell.startWidth)
+    , SvgAttr.y (makePxStringFromInt mapCell.startHeight)
     ]
 
 
@@ -92,3 +128,8 @@ horizontalGridPolygon =
 makePxStringFromFloat : Float -> String
 makePxStringFromFloat floatNumber =
     String.fromFloat floatNumber ++ "px"
+
+
+makePxStringFromInt : Int -> String
+makePxStringFromInt intNumber =
+    String.fromInt intNumber ++ "px"

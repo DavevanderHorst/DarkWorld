@@ -21,3 +21,12 @@ differenceBetweenIntNumbers num1 num2 =
             Basics.min num1 num2
     in
     max - min
+
+
+addToTheBackOfTheList : a -> List a -> List a
+addToTheBackOfTheList toBeAdded list =
+    let
+        reversedList =
+            List.reverse list
+    in
+    List.reverse <| toBeAdded :: reversedList

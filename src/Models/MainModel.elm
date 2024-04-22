@@ -1,13 +1,15 @@
 module Models.MainModel exposing (..)
 
 import Dict exposing (Dict)
+import Models.Types exposing (AnimationType, CellMovementState, MapCellContent)
 
 
 type alias MainModel =
     { screenDimensions : ScreenDimensions
-    , error : Maybe Error
     , currentMap : Map
     , heroSpotOnCurrentMap : MapCoordinate
+    , animation : AnimationType
+    , error : Maybe Error
     }
 
 
@@ -19,21 +21,22 @@ type alias ScreenDimensions =
 
 type alias Map =
     { mapNumber : Int
+
+    -- this is our map
     , mapCells : Dict String MapCell
+
+    -- this is or if cell are activated for moving, when there is an animation or combat they are deactivated
+    , cellMovementState : CellMovementState
     }
 
 
 type alias MapCell =
-    { startWidthInPx : String
-    , startHeightInPx : String
+    { startWidth : Int
+    , startHeight : Int
     , mapCoordinate : MapCoordinate
     , content : MapCellContent
+    , stepsToMoveTowards : Maybe Int
     }
-
-
-type MapCellContent
-    = Empty
-    | Hero
 
 
 type alias MapCoordinate =
@@ -43,6 +46,9 @@ type alias MapCoordinate =
 
 
 type alias Error =
-    { method : String
+    { -- The method in which the error occurred
+      method : String
+
+    -- the error explained in details
     , error : String
     }
