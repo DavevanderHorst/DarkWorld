@@ -7,7 +7,7 @@ import Functions.Movement exposing (trySetMovementAroundHeroInMapCells)
 import Maps.MapCreationFunctions exposing (makeMapCoordinateList)
 import Maps.MapSizes exposing (blackBackgroundMapMargin, evenRowHorizontalBaseShift, mapCellTotalHorizontalWidth, mapCellTotalVerticalHeight)
 import Models.MainModel exposing (Error, Map, MapCell, MapCoordinate)
-import Models.Types exposing (CellMovementState(..), MapCellContent(..), MonsterType(..))
+import Models.Types exposing (CellMovementState(..), Color(..), MapCellContent(..), MonsterType(..))
 
 
 startHeroSpot : MapCoordinate
@@ -17,13 +17,13 @@ startHeroSpot =
 
 startMonsterSpots : List ( MonsterType, MapCoordinate )
 startMonsterSpots =
-    [ ( Dummy, { columnNumber = 3, rowNumber = 2 } )
-    , ( Dummy, { columnNumber = 4, rowNumber = 2 } )
-    , ( Dummy, { columnNumber = 3, rowNumber = 4 } )
-    , ( Dummy, { columnNumber = 4, rowNumber = 4 } )
-    , ( Dummy, { columnNumber = 5, rowNumber = 1 } )
-    , ( Dummy, { columnNumber = 1, rowNumber = 4 } )
-    , ( Dummy, { columnNumber = 2, rowNumber = 4 } )
+    [--( Dummy, { columnNumber = 3, rowNumber = 2 } )
+     --, ( Dummy, { columnNumber = 4, rowNumber = 2 } )
+     --, ( Dummy, { columnNumber = 3, rowNumber = 4 } )
+     --, ( Dummy, { columnNumber = 4, rowNumber = 4 } )
+     --, ( Dummy, { columnNumber = 5, rowNumber = 1 } )
+     --, ( Dummy, { columnNumber = 1, rowNumber = 4 } )
+     --, ( Dummy, { columnNumber = 2, rowNumber = 4 } )
     ]
 
 
@@ -63,6 +63,7 @@ makeStartMap =
                             Ok
                                 { mapNumber = 1
                                 , mapCells = finishedMap
+                                , tempMapCells = Nothing
                                 , cellMovementState = Active
                                 }
 
@@ -101,6 +102,7 @@ generateMapCell mapCoordinate gridCellDict =
             , mapCoordinate = mapCoordinate
             , content = Empty
             , stepsToMoveTowards = Nothing
+            , cellColor = EmptyColor
             }
     in
     insertMapCellInDictUnSafe newMapCell gridCellDict

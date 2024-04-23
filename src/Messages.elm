@@ -6,4 +6,6 @@ import Models.MainModel exposing (MapCoordinate)
 
 type Msg
     = GotViewport Viewport
-    | MapIsClicked MapCoordinate
+    | MapCellIsClicked MapCoordinate
+    | MapCellIsHovered MapCoordinate
+    | MapCellIsLeft

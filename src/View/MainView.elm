@@ -10,7 +10,7 @@ import Models.Types exposing (CellMovementState(..), MapCellContent(..), Monster
 import Svg exposing (Svg)
 import Svg.Attributes as SvgAttr
 import Svg.Events
-import View.Colors exposing (heroMapCellColor, monsterAgroColorString, whiteColorString)
+import View.Colors exposing (getHtmlColor, heroMapCellColor, monsterAgroColorString, whiteColorString)
 
 
 view : MainModel -> Html Msg
@@ -51,7 +51,16 @@ mapView model =
 
 renderMapCells : Map -> List (Svg Msg)
 renderMapCells map =
-    Dict.foldl (renderMapCell map.cellMovementState) [] map.mapCells
+    let
+        mapCellsToUse =
+            case map.tempMapCells of
+                Nothing ->
+                    map.mapCells
+
+                Just tempMapCells ->
+                    tempMapCells
+    in
+    Dict.foldl (renderMapCell map.cellMovementState) [] mapCellsToUse
 
 
 renderMapCell : CellMovementState -> String -> MapCell -> List (Svg Msg) -> List (Svg Msg)
@@ -63,13 +72,19 @@ renderMapCell cellMovementState _ mapCell svgList =
     case mapCell.content of
         Empty ->
             let
+                cellColor =
+                    getHtmlColor mapCell.cellColor
+
                 baseAttributes =
-                    SvgAttr.fill whiteColorString :: baseGridCellAttributes
+                    SvgAttr.fill cellColor :: baseGridCellAttributes
 
                 readyAttributes =
                     case cellMovementState of
                         Active ->
-                            Svg.Events.onClick (MapIsClicked mapCell.mapCoordinate) :: baseAttributes
+                            Svg.Events.onMouseOver (MapCellIsHovered mapCell.mapCoordinate)
+                                :: Svg.Events.onMouseOut MapCellIsLeft
+                                :: Svg.Events.onClick (MapCellIsClicked mapCell.mapCoordinate)
+                                :: baseAttributes
 
                         Passive ->
                             baseAttributes

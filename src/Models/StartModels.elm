@@ -30,4 +30,4 @@ emptyScreenDimensions =
 
 emptyMap : Map
 emptyMap =
-    Map 1 Dict.empty Active
+    Map 1 Dict.empty Nothing Active

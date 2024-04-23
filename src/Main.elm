@@ -4,11 +4,10 @@ import Browser
 import Browser.Dom
 import Functions.Dict.Get exposing (tryGetMapCellFromMapCellDict)
 import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe)
-import Functions.MoveAnimation exposing (tryMakeMoveAnimation)
-import Functions.Movement exposing (trySetMovementAroundHeroInMapCells)
+import Functions.Hover exposing (trySetHoverColorInTempMapCells)
 import Functions.ToString exposing (cellContentToString, mapCoordinateToString)
 import Messages exposing (Msg(..))
-import Models.MainModel exposing (MainModel, ScreenDimensions)
+import Models.MainModel exposing (MainModel, Map, ScreenDimensions)
 import Models.StartModels exposing (startMainModel)
 import Models.Types exposing (CellMovementState(..), MapCellContent(..))
 import Task
@@ -41,7 +40,30 @@ update msg model =
             in
             ( { model | screenDimensions = newScreenDimensions }, Cmd.none )
 
-        MapIsClicked clickedMapCoordinate ->
+        MapCellIsHovered mapCoordinate ->
+            -- hovering is only on out of combat
+            -- only empty cells, which can moved too, can be hovered
+            -- so this means there must a possible path towards hovered cell.
+            -- we set this path in our temp map, so that it can be instantly removed.
+            let
+                updatedMapResult =
+                    trySetHoverColorInTempMapCells mapCoordinate model.currentMap
+            in
+            case updatedMapResult of
+                Err error ->
+                    ( { model | error = Just error }, Cmd.none )
+
+                Ok updatedMap ->
+                    ( { model | currentMap = updatedMap }, Cmd.none )
+
+        MapCellIsLeft ->
+            let
+                updatedMap =
+                    removeTempMapCellsFromCurrentMap model.currentMap
+            in
+            ( { model | currentMap = updatedMap }, Cmd.none )
+
+        MapCellIsClicked clickedMapCoordinate ->
             let
                 currentMap =
                     model.currentMap
@@ -80,6 +102,11 @@ update msg model =
                                 { currentMap | mapCells = mapCellsWithoutHero, cellMovementState = Passive }
                         in
                         ( { model | currentMap = updatedMap }, Cmd.none )
+
+
+removeTempMapCellsFromCurrentMap : Map -> Map
+removeTempMapCellsFromCurrentMap map =
+    { map | tempMapCells = Nothing }
 
 
 subscriptions : MainModel -> Sub Msg

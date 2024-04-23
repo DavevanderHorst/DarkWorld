@@ -30,3 +30,9 @@ type GridDirection
     | Right
     | DownRight
     | DownLeft
+
+
+type Color
+    = EmptyColor
+    | HoveredColor
+    | PartOfPathColor
