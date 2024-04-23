@@ -12,12 +12,12 @@ mapCellSquareSize =
 mapCellTotalRows : Int
 mapCellTotalRows =
     -- uneven looks nicer
-    15
+    5
 
 
 mapCellUnevenRowTotalColumns : Int
 mapCellUnevenRowTotalColumns =
-    19
+    6
 
 
 roomBetweenHorizontalCells : Int

@@ -1,5 +1,7 @@
 module Functions.Basic exposing (..)
 
+import Models.MainModel exposing (Error)
+
 
 isEvenIntNumber : Int -> Bool
 isEvenIntNumber number =
@@ -30,3 +32,48 @@ addToTheBackOfTheList toBeAdded list =
             List.reverse list
     in
     List.reverse <| toBeAdded :: reversedList
+
+
+returnTupleOfFirstThreeElementsOfList : List a -> Result Error ( a, a, a )
+returnTupleOfFirstThreeElementsOfList list =
+    let
+        maybeFirst =
+            List.head list
+
+        maybeFirstTail =
+            List.tail list
+    in
+    case ( maybeFirst, maybeFirstTail ) of
+        ( Just first, Just firstTail ) ->
+            let
+                maybeSecond =
+                    List.head firstTail
+
+                maybeSecondTail =
+                    List.tail firstTail
+            in
+            case ( maybeSecond, maybeSecondTail ) of
+                ( Just second, Just secondTail ) ->
+                    let
+                        maybeThird =
+                            List.head secondTail
+                    in
+                    case maybeThird of
+                        Just third ->
+                            Ok ( first, second, third )
+
+                        Nothing ->
+                            Err returnFirstThreeElementsError
+
+                _ ->
+                    Err returnFirstThreeElementsError
+
+        _ ->
+            Err returnFirstThreeElementsError
+
+
+returnFirstThreeElementsError : Error
+returnFirstThreeElementsError =
+    { method = "Functions.Basic.returnTupleOfFirstThreeElementsOfList"
+    , error = "List did not contain at least 3 elements"
+    }

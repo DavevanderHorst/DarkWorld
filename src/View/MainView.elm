@@ -74,16 +74,33 @@ renderMapCell cellMovementState _ mapCell svgList =
                         Passive ->
                             baseAttributes
             in
-            let
-                movement =
-                    case mapCell.stepsToMoveTowards of
-                        Nothing ->
-                            "not possible"
-
-                        Just steps ->
-                            String.fromInt steps
-            in
-            Svg.rect readyAttributes [ text movement ] :: svgList
+            --let
+            --    movementText =
+            --        case mapCell.stepsToMoveTowards of
+            --            Nothing ->
+            --                "ZZ"
+            --
+            --            Just steps ->
+            --                String.fromInt steps
+            --in
+            Svg.rect readyAttributes []
+                --:: Svg.g
+                --    [ SvgAttr.width mapCellSquareSizeInPixelString
+                --    , SvgAttr.height mapCellSquareSizeInPixelString
+                --    , SvgAttr.x (makePxStringFromInt mapCell.startWidth)
+                --    , SvgAttr.y (makePxStringFromInt mapCell.startHeight)
+                --    ]
+                --    [ Svg.text_
+                --        [ SvgAttr.fill "none"
+                --        , SvgAttr.stroke "red"
+                --        , SvgAttr.textAnchor "middle"
+                --        , SvgAttr.dominantBaseline "middle"
+                --        , SvgAttr.x (makePxStringFromInt (mapCell.startWidth + 26))
+                --        , SvgAttr.y (makePxStringFromInt (mapCell.startHeight + 26))
+                --        ]
+                --        [ text movementText ]
+                --    ]
+                :: svgList
 
         Hero ->
             let

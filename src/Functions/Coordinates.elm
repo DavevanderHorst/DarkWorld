@@ -1,6 +1,6 @@
 module Functions.Coordinates exposing (..)
 
-import Functions.Basic exposing (isEvenIntNumber)
+import Functions.Basic exposing (differenceBetweenIntNumbers, isEvenIntNumber)
 import Models.MainModel exposing (MapCoordinate)
 import Models.Types exposing (GridDirection(..))
 
@@ -89,3 +89,32 @@ getNextCoordinate direction current =
 
             else
                 goDownLeft current
+
+
+areMapCoordinatesNextToEachOther : MapCoordinate -> MapCoordinate -> Bool
+areMapCoordinatesNextToEachOther first second =
+    if first.rowNumber == second.rowNumber then
+        -- if row number is the same, then they are next to each other fi difference in column number is one
+        if differenceBetweenIntNumbers first.columnNumber second.columnNumber == 1 then
+            True
+
+        else
+            False
+
+    else if differenceBetweenIntNumbers first.rowNumber second.rowNumber == 1 then
+        -- if difference between row numbers is only one, then its possible that
+        if isEvenIntNumber first.rowNumber then
+            if first.columnNumber == second.columnNumber || first.columnNumber + 1 == second.columnNumber then
+                True
+
+            else
+                False
+
+        else if second.columnNumber == first.columnNumber || second.columnNumber + 1 == first.columnNumber then
+            True
+
+        else
+            False
+
+    else
+        False

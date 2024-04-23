@@ -12,13 +12,18 @@ import Models.Types exposing (CellMovementState(..), MapCellContent(..), Monster
 
 startHeroSpot : MapCoordinate
 startHeroSpot =
-    { columnNumber = 3, rowNumber = 4 }
+    { columnNumber = 2, rowNumber = 5 }
 
 
 startMonsterSpots : List ( MonsterType, MapCoordinate )
 startMonsterSpots =
-    [ ( Dummy, { columnNumber = 9, rowNumber = 4 } )
-    , ( Dummy, { columnNumber = 13, rowNumber = 7 } )
+    [ ( Dummy, { columnNumber = 3, rowNumber = 2 } )
+    , ( Dummy, { columnNumber = 4, rowNumber = 2 } )
+    , ( Dummy, { columnNumber = 3, rowNumber = 4 } )
+    , ( Dummy, { columnNumber = 4, rowNumber = 4 } )
+    , ( Dummy, { columnNumber = 5, rowNumber = 1 } )
+    , ( Dummy, { columnNumber = 1, rowNumber = 4 } )
+    , ( Dummy, { columnNumber = 2, rowNumber = 4 } )
     ]
 
 
