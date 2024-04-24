@@ -2,7 +2,7 @@ module Functions.Movement exposing (..)
 
 import Dict exposing (Dict)
 import Functions.Basic exposing (addToTheBackOfTheList, isEvenIntNumber, returnTupleOfFirstThreeElementsOfList)
-import Functions.Coordinates exposing (areMapCoordinatesNextToEachOther, getNextCoordinate, goUp, goUpLeft)
+import Functions.Coordinates exposing (areMapCoordinatesNextToEachOther, getNextMapCoordinate, goUp, goUpLeft)
 import Functions.Dict.Get exposing (tryGetMapCellFromMapCellDict)
 import Functions.Dict.Insert exposing (setMapCellStepsInEmptyMapCell)
 import Functions.Direction exposing (getNextDirectionForGoingAround)
@@ -123,10 +123,10 @@ makeMapCellStatsForNextRound currentDirection currentSteps roundNumber currentSp
             nextDirection =
                 getNextDirectionForGoingAround currentDirection
         in
-        ( getNextCoordinate nextDirection currentSpot, 1, nextDirection )
+        ( getNextMapCoordinate nextDirection currentSpot, 1, nextDirection )
 
     else
-        ( getNextCoordinate currentDirection currentSpot, currentSteps + 1, currentDirection )
+        ( getNextMapCoordinate currentDirection currentSpot, currentSteps + 1, currentDirection )
 
 
 addCurrentRoundCellsToMapCellDict : List ( Maybe Int, MapCell ) -> Dict String MapCell -> List MapCoordinate -> ( Dict String MapCell, List MapCoordinate )
@@ -298,7 +298,7 @@ getLowestMovement currentSpot maybeLowest gridCellDict direction =
             nextDirection =
                 getNextDirectionForGoingAround direction
         in
-        getLowestMovement (getNextCoordinate direction currentSpot) newLowest gridCellDict nextDirection
+        getLowestMovement (getNextMapCoordinate direction currentSpot) newLowest gridCellDict nextDirection
 
 
 getMovementValue : MapCoordinate -> Dict String MapCell -> Maybe Int

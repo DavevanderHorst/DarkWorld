@@ -12,7 +12,7 @@ import Models.Types exposing (CellMovementState(..), Color(..), MapCellContent(.
 
 startHeroSpot : MapCoordinate
 startHeroSpot =
-    { columnNumber = 2, rowNumber = 5 }
+    { columnNumber = 7, rowNumber = 7 }
 
 
 startMonsterSpots : List ( MonsterType, MapCoordinate )

@@ -4,7 +4,7 @@ import Browser
 import Browser.Dom
 import Functions.Dict.Get exposing (tryGetMapCellFromMapCellDict)
 import Functions.Dict.Insert exposing (insertMapCellInDictUnSafe)
-import Functions.Hover exposing (trySetHoverColorInTempMapCells)
+import Functions.Hover exposing (trySetMovementPathToHoveredCell)
 import Functions.ToString exposing (cellContentToString, mapCoordinateToString)
 import Messages exposing (Msg(..))
 import Models.MainModel exposing (MainModel, Map, ScreenDimensions)
@@ -47,7 +47,7 @@ update msg model =
             -- we set this path in our temp map, so that it can be instantly removed.
             let
                 updatedMapResult =
-                    trySetHoverColorInTempMapCells mapCoordinate model.currentMap
+                    trySetMovementPathToHoveredCell mapCoordinate model.currentMap
             in
             case updatedMapResult of
                 Err error ->

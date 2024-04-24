@@ -49,8 +49,8 @@ goUpLeft coordinate =
     { coordinate | rowNumber = coordinate.rowNumber - 1, columnNumber = coordinate.columnNumber - 1 }
 
 
-getNextCoordinate : GridDirection -> MapCoordinate -> MapCoordinate
-getNextCoordinate direction current =
+getNextMapCoordinate : GridDirection -> MapCoordinate -> MapCoordinate
+getNextMapCoordinate direction current =
     let
         isEvenRow =
             isEvenIntNumber current.rowNumber

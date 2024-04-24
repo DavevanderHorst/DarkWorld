@@ -10,7 +10,7 @@ import Models.Types exposing (CellMovementState(..), MapCellContent(..), Monster
 import Svg exposing (Svg)
 import Svg.Attributes as SvgAttr
 import Svg.Events
-import View.Colors exposing (getHtmlColor, heroMapCellColor, monsterAgroColorString, whiteColorString)
+import View.Colors exposing (getHtmlColor, heroMapCellColor, monsterAgroColorString)
 
 
 view : MainModel -> Html Msg
